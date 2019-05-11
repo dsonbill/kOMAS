@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7999BF50-1FF7-4D61-9A4C-BA34544327B6}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>kOSPropMonitor</RootNamespace>
-    <AssemblyName>kOSPropMonitor</AssemblyName>
+    <RootNamespace>kOMAS</RootNamespace>
+    <AssemblyName>kOMAS</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -49,8 +49,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="kPMAPI.cs" />
-    <Compile Include="kPMCore.cs" />
+    <Compile Include="kOMASAPI.cs" />
+    <Compile Include="kOMASCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="kOSMonitor.cs" />
     <Compile Include="Utilities.cs" />
@@ -87,16 +87,16 @@ mkdir "$(ProjectDir)..\..\Build\kPM"
 xcopy "$(TargetDir)$(ProjectName).dll" "$(ProjectDir)..\..\Build\kPM" /y
 xcopy "$(ProjectDir)..\..\GameData\kPM" "$(ProjectDir)..\..\Build\kPM" /e /y /i /r
 
-mkdir "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)"
-mkdir "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)\GameData"
-xcopy "$(ProjectDir)..\..\Build\kPM" "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)\GameData\kPM" /e /y /i /r
-xcopy "$(ProjectDir)..\..\README.md" "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)" /y
-xcopy "$(ProjectDir)..\..\LICENSE" "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)" /y
-xcopy "$(ProjectDir)..\..\JSONFX LICENSE" "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)" /y
-xcopy "$(ProjectDir)..\..\Optional" "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)\Optional" /e /y /i /r
+mkdir "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)"
+mkdir "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)\GameData"
+xcopy "$(ProjectDir)..\..\Build\kPM" "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)\GameData\kPM" /e /y /i /r
+xcopy "$(ProjectDir)..\..\README.md" "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)" /y
+xcopy "$(ProjectDir)..\..\LICENSE" "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)" /y
+xcopy "$(ProjectDir)..\..\JSONFX LICENSE" "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)" /y
+xcopy "$(ProjectDir)..\..\Optional" "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)\Optional" /e /y /i /r
 
-powershell Compress-Archive -Path "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)" -DestinationPath "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber).zip"
+powershell Compress-Archive -Path "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)" -DestinationPath "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber).zip"
 
-rmdir "$(ProjectDir)..\..\Build\kOSPropMonitor-@(VersionNumber)" /s /q</PostBuildEvent>
+rmdir "$(ProjectDir)..\..\Build\kOMAS-@(VersionNumber)" /s /q</PostBuildEvent>
   </PropertyGroup>
 </Project>

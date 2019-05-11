@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace kOSPropMonitor
+namespace kOMAS
 {
     public static class Utilities
     {

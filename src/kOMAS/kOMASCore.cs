@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using kOS.Safe.UserIO;
 
-namespace kOSPropMonitor
+namespace kOMAS
 {
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
-    class kPMCore : MonoBehaviour
+    class kOMASCore : MonoBehaviour
     {
         //Singleton
-        private static kPMCore singleton;
+        private static kOMASCore singleton;
 
         //Tracking
-        public Dictionary<Guid, kPMVesselMonitors> vessel_register;
+        public Dictionary<Guid, kOMASVesselMonitors> vessel_register;
         public Dictionary<Guid, kOSMonitor> monitor_register;
-        private string CONTROL_LOCKOUT = "kPMCore";
+        private string CONTROL_LOCKOUT = "kOMASCore";
         public Guid lock_control { get; private set; }
         public Guid master_lock { get; private set; }
         private bool wasInFlight;
@@ -27,16 +27,16 @@ namespace kOSPropMonitor
         private KeyBinding rememberCameraViewKey;
 
         //ctor
-        public kPMCore()
+        public kOMASCore()
         {
             singleton = this;
             master_lock = Guid.NewGuid();
             lock_control = master_lock;
-            Debug.Log("kPMCore GUID: " + master_lock);
+            Debug.Log("kOMASCore GUID: " + master_lock);
         }
 
         //Singleton
-        public static kPMCore fetch
+        public static kOMASCore fetch
         {
             get
             {
@@ -51,7 +51,7 @@ namespace kOSPropMonitor
         {
             //Initialize
             GameObject.DontDestroyOnLoad(this);
-            vessel_register = new Dictionary<Guid, kPMVesselMonitors>();
+            vessel_register = new Dictionary<Guid, kOMASVesselMonitors>();
             monitor_register = new Dictionary<Guid, kOSMonitor>();
             GameEvents.onVesselDestroy.Add(OnVesselDestroy);
 
@@ -69,8 +69,8 @@ namespace kOSPropMonitor
             {
                 if (wasInFlight)
                 {
-                    Debug.Log("kPM: kPMCore Leaving Flight - Reinitializing Registries");
-                    vessel_register = new Dictionary<Guid, kPMVesselMonitors>();
+                    Debug.Log("kOMAS: kOMASCore Leaving Flight - Reinitializing Registries");
+                    vessel_register = new Dictionary<Guid, kOMASVesselMonitors>();
                     monitor_register = new Dictionary<Guid, kOSMonitor>();
                     wasInFlight = false;
                 }
@@ -86,7 +86,7 @@ namespace kOSPropMonitor
 
             if (!wasInFlight) wasInFlight = true;
 
-            foreach (kPMVesselMonitors monitors in vessel_register.Values)
+            foreach (kOMASVesselMonitors monitors in vessel_register.Values)
             {
                 monitors.Update();
             }
@@ -112,7 +112,7 @@ namespace kOSPropMonitor
             {
                 return;
             }
-            vessel_register[vesselID] = new kPMVesselMonitors(vesselID);
+            vessel_register[vesselID] = new kOMASVesselMonitors(vesselID);
         }
 
         public void DeregisterVessel(Guid vesselID)
@@ -127,7 +127,7 @@ namespace kOSPropMonitor
             }
         }
 
-        public kPMVesselMonitors GetVesselMonitors(Guid vesselID)
+        public kOMASVesselMonitors GetVesselMonitors(Guid vesselID)
         {
             return vessel_register[vesselID];
         }
@@ -166,7 +166,7 @@ namespace kOSPropMonitor
             if (lock_control != master_lock) return;
             lock_control = monitorID;
             InputLockManager.SetControlLock(CONTROL_LOCKOUT);
-            if (lock_control != master_lock) Debug.Log("kPMCore: Locked. New Lock: " + lock_control);
+            if (lock_control != master_lock) Debug.Log("kOMASCore: Locked. New Lock: " + lock_control);
 
             // This seems to be the only way to force KSP to let me lock out the "X" throttle
             // key.  It seems to entirely bypass the logic of every other keypress in the game,
@@ -185,7 +185,7 @@ namespace kOSPropMonitor
             if (lock_control == master_lock) return;
             lock_control = master_lock;
             InputLockManager.RemoveControlLock(CONTROL_LOCKOUT);
-            Debug.Log("kPMCore: Unlocked. Returned To Master Lock");
+            Debug.Log("kOMASCore: Unlocked. Returned To Master Lock");
 
             // This seems to be the only way to force KSP to let me lock out the "X" throttle
             // key.  It seems to entirely bypass the logic of every other keypress in the game:
@@ -272,7 +272,7 @@ namespace kOSPropMonitor
         }
     }
 
-    class kPMVesselMonitors
+    class kOMASVesselMonitors
     {
         public Guid vesselGuid { get; private set; }
         public Dictionary<int, Guid> monitors = new Dictionary<int, Guid>();
@@ -284,14 +284,14 @@ namespace kOSPropMonitor
         public Dictionary<int, Dictionary<int, string>> flagLabels = new Dictionary<int, Dictionary<int, string>>();
         public Dictionary<int, Dictionary<int, bool>> flagStates = new Dictionary<int, Dictionary<int, bool>>();
 
-        public kPMVesselMonitors(Guid id)
+        public kOMASVesselMonitors(Guid id)
         {
             vesselGuid = id;
         }
 
         public void RegisterMonitor(Guid monitorID)
         {
-            foreach (KeyValuePair<Guid, kPMVesselMonitors> kvpair in kPMCore.fetch.vessel_register)
+            foreach (KeyValuePair<Guid, kOMASVesselMonitors> kvpair in kOMASCore.fetch.vessel_register)
             {
                 if (kvpair.Value.Equals(this)) continue;
                 foreach (int id in kvpair.Value.monitors.Keys)
@@ -301,7 +301,7 @@ namespace kOSPropMonitor
             }
             if (!monitors.ContainsValue(monitorID)) monitors[monitors.Count] = monitorID;
 
-            foreach (KeyValuePair<Guid, kPMVesselMonitors> kvpair in kPMCore.fetch.vessel_register)
+            foreach (KeyValuePair<Guid, kOMASVesselMonitors> kvpair in kOMASCore.fetch.vessel_register)
             {
                 if (kvpair.Value.Equals(this)) continue;
                 foreach (int id in kvpair.Value.registeredMonitors.Keys)
@@ -316,11 +316,11 @@ namespace kOSPropMonitor
         {
             if (recentlyCreated && registeredMonitors.Count > 0) recentlyCreated = false;
 
-            if (!recentlyCreated && registeredMonitors.Count == 0) kPMCore.fetch.DeregisterVessel(vesselGuid);
+            if (!recentlyCreated && registeredMonitors.Count == 0) kOMASCore.fetch.DeregisterVessel(vesselGuid);
 
             if (FlightGlobals.fetch.activeVessel.id != vesselGuid && !reconfigured)
             {
-                Debug.Log("kPM: Reconfiguring Vessel");
+                Debug.Log("kOMAS: Reconfiguring Vessel");
                 reconfigured = true;
                 monitors = new Dictionary<int, Guid>();
             }

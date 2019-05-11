@@ -8,7 +8,7 @@ using kOS.Safe.Screen;
 using kOS.Module;
 using JsonFx.Json;
 
-namespace kOSPropMonitor
+namespace kOMAS
 {
     public class kOSMonitor : InternalModule
     {
@@ -92,7 +92,7 @@ namespace kOSPropMonitor
 
         //General Variables
         private bool initialized = false;
-        private kPMVesselMonitors vt;
+        private kOMASVesselMonitors vt;
         private int lastPartCount = 0;
         private List<int> multiFunctionButtonsPOS;
         private char[] delimiterChars = { ' ', ',', '.', ':'};
@@ -163,7 +163,7 @@ namespace kOSPropMonitor
                     //Check for destruction or separation
                     if (this.vessel.parts.Count != lastPartCount)
                     {
-                        Debug.Log("kPM: Ship Reconfiguring");
+                        Debug.Log("kOMAS: Ship Reconfiguring");
                         Initialize(screenWidth, screenHeight);
                         return;
                     }
@@ -207,7 +207,7 @@ namespace kOSPropMonitor
             {
                 if (this.vessel.parts.Count != lastPartCount)
                 {
-                    Debug.Log("kPM: Ship Reconfiguring");
+                    Debug.Log("kOMAS: Ship Reconfiguring");
                     Initialize(screenWidth, screenHeight);
                     return;
                 }
@@ -247,10 +247,10 @@ namespace kOSPropMonitor
             if (!processorIsInstalled) return;
 
             //Register Vessel
-            kPMCore.fetch.RegisterVessel(this.vessel.id);
+            kOMASCore.fetch.RegisterVessel(this.vessel.id);
 
             //Get Vessel Track
-            vt = kPMCore.fetch.GetVesselMonitors(this.vessel.id);
+            vt = kOMASCore.fetch.GetVesselMonitors(this.vessel.id);
 
             //Set Vessel Part Cound
             lastPartCount = this.vessel.parts.Count;
@@ -308,12 +308,12 @@ namespace kOSPropMonitor
                 ReadReplacements();
 
                 //Register monitor and Keyboard Delegate
-                kPMCore.fetch.RegisterMonitor(this, guid);
+                kOMASCore.fetch.RegisterMonitor(this, guid);
 
                 initialized = true;
             }
             
-            Debug.Log("kPM: kOSMonitor Initialized!");
+            Debug.Log("kOMAS: kOSMonitor Initialized!");
         }
 
         public string ContentProcessor(int screenWidth, int screenHeight)
@@ -489,7 +489,7 @@ namespace kOSPropMonitor
             }
             catch (Exception e)
             {
-                Debug.Log("kPM: Error Loading JSON File: " + e.Message);
+                Debug.Log("kOMAS: Error Loading JSON File: " + e.Message);
             }
         }
 
@@ -666,8 +666,8 @@ namespace kOSPropMonitor
         //Keyboard Control
         public void ToggleLock()
         {
-            kPMCore.fetch.ToggleLock(guid);
-            isLocked = kPMCore.fetch.IsLocked(guid);
+            kOMASCore.fetch.ToggleLock(guid);
+            isLocked = kOMASCore.fetch.IsLocked(guid);
         }
 
         public void Type(char command)
