@@ -1,2 +1,2 @@
-# kOSPropMonitor
-kOS&lt;-->RPM interface for Kerbal Space Program
+# kOMAS
+kOS&lt;-->MAS interface for Kerbal Space Program
